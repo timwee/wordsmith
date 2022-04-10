@@ -1,0 +1,19 @@
+# docker build -t wordsmithweb .
+# docker run wordsmithweb
+
+# alpine much smaller linux
+FROM golang:alpine AS build
+
+RUN apk --no-cache add gcc g++ make git
+WORKDIR /go/src/app
+
+# need to copy recursively?
+COPY ./* .
+
+RUN GOOS=linux go build -ldflags="-s -w" -o ./bin/web-go ./dispatcher.go
+
+FROM alpine:3.9
+WORKDIR /usr/bin
+COPY --from=build /go/src/app/bin /go/bin
+EXPOSE 80
+ENTRYPOINT /go/bin/web-go 
