@@ -1,5 +1,6 @@
 # docker build -t wordsmithjvm .
 # docker run wordsmithjvm
+# docker run -ti wordsmithjvm bash
 
 FROM ubuntu
 
@@ -7,9 +8,17 @@ FROM ubuntu
 RUN apt-get update
 RUN apt-get install maven openjdk-8-jdk -y
 
+# can also do WORKDIR
+# WORKDIR /src
+# COPY pom.xml .
+# COPY src src
+
 # Copy all the files. This is not optimal, but it
 # will do for now.
-COPY . .
+# COPY . .
+# or
+COPY pom.xml .
+COPY src src
 
 # Build the code. Note: this will place multiple
 # JAR files in a directory named "target". There
