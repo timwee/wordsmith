@@ -1,7 +1,7 @@
 # docker build -t wordsmithdb .
 # docker run wordsmithdb
 
-FROM postgres
+FROM postgres:alpine
 
 # The postgres official image has a "magic" entrypoint,
 # that will automatically execute scripts and load .sql

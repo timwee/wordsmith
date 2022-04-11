@@ -23,7 +23,7 @@ COPY src src
 RUN mvn verify
 
 # Start a new stage.
-FROM openjdk
+FROM openjdk:8-alpine
 
 # Copy the "target" directory.
 COPY --from=mvnbuild /target /target
