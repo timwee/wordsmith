@@ -1,4 +1,7 @@
-FROM golang as build
+# docker build -t wordsmithweb:alpine .
+# docker run wordsmithweb:alpine
+
+FROM golang:alpine as build
 
 # Copy only the source file. We do not need the "static"
 # directory in the build phase.
@@ -8,7 +11,7 @@ COPY dispatcher.go .
 RUN go build dispatcher.go
 
 # Start a new stage.
-FROM ubuntu
+FROM alpine:3.9
 
 # Copy the binary.
 # Note that the golang image uses /go as the WORKDIR.
