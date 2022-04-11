@@ -1,23 +1,19 @@
 # docker build -t wordsmithjvm .
 # docker run wordsmithjvm
 # docker run -ti wordsmithjvm bash
+FROM maven as mvnbuild
 
-FROM ubuntu
-
-# Install the JDK and Maven, as instructed.
-RUN apt-get update
-RUN apt-get install maven openjdk-8-jdk -y
-
-# can also do WORKDIR
-# WORKDIR /src
-# COPY pom.xml .
-# COPY src src
-
-# Copy all the files. This is not optimal, but it
-# will do for now.
-# COPY . .
-# or
+# Copy the file describing the dependencies first.
 COPY pom.xml .
+
+# Use maven to install the dependencies.
+RUN mvn verify
+
+# Now, copy the source files for our application.
+# Remember that when copying a directory, we generally
+# *do not* to do "COPY src ." otherwise the content of
+# "src" gets copied to the directory (instead of
+# creating a subdirectory named "src").
 COPY src src
 
 # Build the code. Note: this will place multiple
@@ -25,6 +21,12 @@ COPY src src
 # will be our compiled code ("words.jar") but also
 # its dependencies.
 RUN mvn verify
+
+# Start a new stage.
+FROM openjdk
+
+# Copy the "target" directory.
+COPY --from=mvnbuild /target /target
 
 # We use the "exec" shell built-in here, to make
 # sure that the program executes as PID 1 and
